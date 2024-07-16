@@ -26,7 +26,7 @@ elementAt k x
 -- Find the number of elements in a list
 length' :: [a] -> Int
 length' [] = 0
-length' (x : xs) = 1 + length xs
+length' (x : xs) = 1 + length' xs
 
 -- Problem 5
 -- Reverse a list
@@ -40,6 +40,26 @@ isPalindrome :: (Eq a) => [a] -> Bool
 isPalindrome [] = True
 isPalindrome [_] = True
 isPalindrome x = head x == last x && isPalindrome (tail $ init x)
+
+-- Problem 7
+-- Flatten a nest list structure
+data NestedList a = Elem a | List [NestedList a] deriving (Show)
+
+flatten' :: NestedList a -> [a]
+flatten' (Elem a) = [a]
+flatten' (List []) = []
+flatten' (List (x : xs)) = flatten' x ++ flatten' (List xs)
+
+-- Problem 8
+-- Eliminate consecutive duplicates of elements
+compress :: (Eq a) => [a] -> [a]
+compress [] = []
+compress (x : xs) = x : impl xs x
+  where
+    impl [] _ = []
+    impl (y : ys) c
+      | c /= y = y : impl ys y
+      | otherwise = impl ys y
 
 main = do
   let array = [1 .. 10]
@@ -62,3 +82,9 @@ main = do
   print $ isPalindrome [1, 1]
   print $ isPalindrome [1, 2, 1]
   print $ isPalindrome [1, 2, 3, 1]
+
+  putStrLn "Problem 7: Flatten a nested list structure"
+  print $ flatten' (List [Elem 1, List [Elem 2, Elem 3], Elem 4])
+
+  putStrLn "Problem 8: Eliminate consecutive duplicates of elements"
+  print $ compress "aaaabbbbcccc"
